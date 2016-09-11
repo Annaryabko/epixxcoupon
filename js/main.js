@@ -263,6 +263,7 @@ function updateVisibility(){
 		primorskaya: checkboxes[6].checked,
 		admiralteiskaya: checkboxes[7].checked,
 		pushkinskaya: checkboxes[8].checked,
+		//лучше пройтись циклом по всем элементам в группе, вынуть значение из innerHTML, и с ним работать. А сейчас ничего нельзя изменить.
 	};
 
 	var filteredPrice = {
@@ -352,26 +353,147 @@ document.querySelector('input[type="date"]').addEventListener('input', updateVis
 //
 
 var buttonBuy = document.querySelector('.catalog_basket__summ a.btn');
+var modalOrder = document.querySelector('.modal_order');
+var modalOrderBg = document.querySelector('.modal_underlay');
 
 
-function toBuy (e) {
+function openToBuy (e) {
 	e.preventDefault();
-	var modalOrder = document.querySelector('.modal_order');
 	modalOrder.style.display = "block";
-	var modalOrderBg = document.querySelector('.modal_underlay');
 	modalOrderBg.style.display = "block";
-
 }
 
-buttonBuy.addEventListener('click', toBuy);
+buttonBuy.addEventListener('click', openToBuy);
+
+var closeBtn = document.querySelector('.modal__close');
+var modalBg = document.querySelector('.modal_underlay');
+
+function closeModal (e) {
+	e.preventDefault();
+	modalOrder.style.display = "none";
+	modalOrderBg.style.display = "none";
+}
+
+
+closeBtn.addEventListener('click', closeModal);
+modalBg.addEventListener('click', closeModal);
+
+
+//
+//валидация формы отправки
+//
+var validators = {
+	lastname: /^[a-z0-9]+$/i,
+	phonenumber: /^[0-9]{7}$/,
+	email: /^[a-z0-9]+@[a-z]+\.[a-z]+$/i
+
+};
+
+for (let name in validators) {
+
+	document.querySelector('.modal__line .input[name="'+name+'"]').addEventListener('change', function (){
+		if (document.querySelector('.'+name+'__message')) {
+			document.querySelector('.'+name+'__message').remove();
+		}
+
+		if (validators[name].test(this.value)){
+			
+
+			this.style.background = 'green';
+			var success = document.createElement('div');
+			success.className = ''+name+'__message';
+			success.innerHTML = 'Все верно.';
+			success.style.fontSize = '12px';
+			success.style.color = 'green';
+			this.parentNode.appendChild(success);
+
+		} else {
+			this.style.background = 'red';
+			var fail = document.createElement('div');
+			fail.className = ''+name+'__message';
+			fail.innerHTML = 'Ошибка!!';
+			fail.style.fontSize = '12px';
+			fail.style.color = 'red';
+			this.parentNode.appendChild(fail);
+		}
+
+	});
+}
+
+
+// window.onload = function() {
+
+// var input = document.querySelectorAll('.modal_line .input');
+
+//var regName = /^[a-z0-9]+$/i,
+// 	regPhone = /^[0-9]{7}$/,
+// 	regEmail = /^[a-z0-9]+@[a-z]+\.[a-z]+$/i;
+
+// var clean = function() {
+// 	this.style.background= 'white';
+// }
+
+// var check = function(regexp) {
+
+// 	    if((this.value).search(regexp) == -1) { // возвращает порядковый номер введения. Лучше .test??????
+//         this.style.background= 'red';
+//       	}  else {
+//       	this.style.background= 'green';
+//       	}
+
+
+// }
+
+// var validators = {
+// 	lastname: checkName,
+// 	phonenumber: checkPhone,
+// 	email: checkEmail
+// } 
+
+
+// function checkName () {
+
+// }
+
+// function checkPhone () {
+// }
+
+// function checkEmail () {
+// }
 
 
 
+// function validate () {
+// 	clean.call(this);
+
+// 	if ( this.value === "" ) return;
+    
+   
+//     var type = this.getAttribute('name');  // type === 'lastname'
+//     var validator === checkName;
+//     validators[last]
 
 
 
+//     /*obj = {
+//     	'lastname': 1,
+//     	'type': 2
+//     }
+//     obj[type] -> obj['lastname'] */
 
 
+// 	if ((name).indexOf("your name") == -1 ) {
+//       check.call(this, regName);
+// 	}
+
+// }
+
+
+//   for(var i = 0; i < input.length; i++) {
+//     input[i].addEventListener('change', validate);
+//   }
+
+// }
 
 
 

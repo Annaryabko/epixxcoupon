@@ -185,6 +185,199 @@ for (let i = 0; i < catalogFiltersItems.length; i++) {
 	});
 };
 
+//
+//сортируем по ценам
+//
+
+var sortByPriceElem = document.querySelectorAll('.catalog__item');
+var sortByPriceElemArray = [];
+
+for (var i = 0; i < sortByPriceElem.length; i++) {
+	sortByPriceElemArray.push(sortByPriceElem[i]);
+}
+
+var parentSort = document.querySelector('.catalog__list');
+
+document.querySelector('.catalog_sort__item:first-child').addEventListener('click', function(event){
+	event.preventDefault();
+	
+	sortByPriceElemArray.sort(function(item1, item2){
+		var price1 = item1.getAttribute('data-price');
+		var price2 = item2.getAttribute('data-price');
+		return price1 - price2;
+		//возвращается результат вычитания. Отрицательный, положительный или 0.
+	});
+
+	for (var i = 0; i < sortByPriceElemArray.length; i++) {
+		parentSort.appendChild(sortByPriceElemArray[i]);
+	}
+
+});
+
+document.querySelector('.catalog_sort__item:nth-child(2)').addEventListener('click', function(event){
+	event.preventDefault();
+	
+	sortByPriceElemArray.sort(function(item1, item2){
+		var price1 = item1.querySelector('.catalog_cart__discount').innerHTML;
+		var price2 = item2.querySelector('.catalog_cart__discount').innerHTML;
+		price1 = parseInt(price1, 10);
+		price2 = parseInt(price2, 10);
+
+		return price2 - price1;
+		//возвращается результат вычитания. Отрицательный, положительный или 0.
+	});
+
+	for (var i = 0; i < sortByPriceElemArray.length; i++) {
+		parentSort.appendChild(sortByPriceElemArray[i]);
+	}
+
+});
+
+
+//
+//начинаем делать страшные фильтры 0_о
+//
+
+
+/* 
+написать метод, который способен ответить на вопрос, надо показывать блок или нет. Если нет dislay none.
+Отобразить все блоки, которые в атрибутах совпадают с выбранными галочками и полями, остальные скрыть.
+
+
+*/
+
+var catItems = document.querySelectorAll('.catalog__item');
+var checkboxes = document.querySelectorAll('.checkbox__input');
+var pricesInput = document.querySelectorAll('.filter__input');
+
+
+function updateVisibility(){
+	
+	var filteredTypes = {
+		entertainment: checkboxes[0].checked,
+		beauty: checkboxes[1].checked,
+		travel: checkboxes[2].checked,
+		education: checkboxes[3].checked,
+		food: checkboxes[4].checked,
+		special: checkboxes[5].checked,
+		primorskaya: checkboxes[6].checked,
+		admiralteiskaya: checkboxes[7].checked,
+		pushkinskaya: checkboxes[8].checked,
+	};
+
+	var filteredPrice = {
+		from: Number(pricesInput[0].value),
+		to: Number(pricesInput[1].value),
+	}
+
+	var inputDateValue = document.querySelector('input[type="date"]').value;
+	
+
+	for (var i = 0; i < catItems.length; i++) {
+		catItems[i].style.display = 'inline-block';
+
+		if (filteredTypes.entertainment || filteredTypes.beauty || filteredTypes.travel || filteredTypes.education || filteredTypes.food) {
+			var type = catItems[i].getAttribute('data-type');
+
+			if (filteredTypes[type] === false) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+		if (filteredTypes.primorskaya || filteredTypes.admiralteiskaya || filteredTypes.pushkinskaya || filteredTypes.education || filteredTypes.food) {
+			var type = catItems[i].getAttribute('data-type');
+
+			if (filteredTypes[type] === false) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+		if (checkboxes[5].checked) {
+			if (!catItems[i].classList.contains('catalog_cart--special')) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+
+	
+		if (!isNaN(filteredPrice.from) && filteredPrice.from !== 0 ) {
+			var price = catItems[i].getAttribute('data-price');
+
+			//if (filteredPrice[type] < pricesInput[0].value) {
+			if (price < filteredPrice.from) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+		if (!isNaN(filteredPrice.to) && filteredPrice.to !== 0 ) {
+			var price = catItems[i].getAttribute('data-price');
+
+			if (price > filteredPrice.to) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+
+
+		if (inputDateValue) {
+			var inputDate = new Date(inputDateValue);
+			var parts = catItems[i].getAttribute('data-date-from').split('.');
+			var dateItems = new Date('20' + parts[2], parts[1] - 1, parts[0]);
+
+			if (dateItems < inputDate) {
+				catItems[i].style.display = 'none';
+			}
+		}
+
+
+	}
+}
+
+
+var checkboxes = document.querySelectorAll('.checkbox__input');
+
+for (var checkbox of checkboxes) {
+	checkbox.addEventListener('change', updateVisibility);
+}
+
+for (var prices of pricesInput) {
+	prices.addEventListener('input', updateVisibility);
+}
+
+document.querySelector('input[type="date"]').addEventListener('input', updateVisibility);
+
+
+//
+//клик Купить и модальное окно
+//
+
+var buttonBuy = document.querySelector('.catalog_basket__summ a.btn');
+
+
+function toBuy (e) {
+	e.preventDefault();
+	var modalOrder = document.querySelector('.modal_order');
+	modalOrder.style.display = "block";
+	var modalOrderBg = document.querySelector('.modal_underlay');
+	modalOrderBg.style.display = "block";
+
+}
+
+buttonBuy.addEventListener('click', toBuy);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*var catalogFiltersItems = document.querySelectorAll('.catalog_filters__item');
 
@@ -196,6 +389,8 @@ for (let i = 0; i < catalogFiltersItems.length; i++) {
 	})
 
 } */
+
+
 
 
 

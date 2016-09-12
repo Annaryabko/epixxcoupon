@@ -372,6 +372,14 @@ function closeModal (e) {
 	e.preventDefault();
 	modalOrder.style.display = "none";
 	modalOrderBg.style.display = "none";
+	
+	if (document.querySelector('.'+name+'__message')) {
+		document.querySelector('.'+name+'__message').remove();
+		document.querySelector('.modal__line .input[name="'+name+'"]').style.background = 'white';
+		document.querySelector('.modal__line .input[name="'+name+'"]').value = '';
+
+	}
+
 }
 
 

@@ -197,9 +197,14 @@ for (var i = 0; i < sortByPriceElem.length; i++) {
 }
 
 var parentSort = document.querySelector('.catalog__list');
+var sortByPrice = document.querySelector('.catalog_sort__item:first-child');
+var sortByDiscount = document.querySelector('.catalog_sort__item:nth-child(2)');
 
-document.querySelector('.catalog_sort__item:first-child').addEventListener('click', function(event){
+sortByPrice.addEventListener('click', function(event){
 	event.preventDefault();
+	sortByPrice.style.color='#f04a22';
+	sortByDiscount.style.color='';
+
 	
 	sortByPriceElemArray.sort(function(item1, item2){
 		var price1 = item1.getAttribute('data-price');
@@ -214,8 +219,11 @@ document.querySelector('.catalog_sort__item:first-child').addEventListener('clic
 
 });
 
-document.querySelector('.catalog_sort__item:nth-child(2)').addEventListener('click', function(event){
+sortByDiscount.addEventListener('click', function(event){
 	event.preventDefault();
+	sortByPrice.style.color='';
+	sortByDiscount.style.color='#f04a22';
+
 	
 	sortByPriceElemArray.sort(function(item1, item2){
 		var price1 = item1.querySelector('.catalog_cart__discount').innerHTML;
@@ -376,8 +384,7 @@ function closeModal (e) {
 	if (document.querySelector('.'+name+'__message')) {
 		document.querySelector('.'+name+'__message').remove();
 		document.querySelector('.modal__line .input[name="'+name+'"]').style.background = 'white';
-		document.querySelector('.modal__line .input[name="'+name+'"]').value = '';
-
+		document.querySelector('.modal__line .input[name="'+name+'"]').value = '';x
 	}
 
 }
@@ -427,6 +434,93 @@ for (let name in validators) {
 
 	});
 }
+
+
+//
+// галочки с выбором времени доставка
+//
+
+var tickIconsModal = document.querySelectorAll('.modal__line input.checkbox__input');
+
+for (let i = 0; i<tickIconsModal.length; i++){
+
+	tickIconsModal[i].addEventListener('change', function() {
+
+		for (let j = 0; j<tickIconsModal.length; j++) {
+
+			if (tickIconsModal[j] != this) {
+			tickIconsModal[j].checked = false;
+			}
+		}
+	})
+
+}
+
+		// tickIconsModal.forEach(m => {
+		// 	if (m === this) return;
+		// 	m.checked = false;
+		// });
+
+//
+//i want it
+//
+
+document.querySelector('.modal__inner a.btn').addEventListener('click', function(e){
+	e.preventDefault();
+
+	// function checkDelivery (){
+	// 	for (let i = 0; i < tickIconsModal.length; i++) {
+	// 		if (tickIconsModal[i].checked) {
+	// 			return true;
+	// 		}
+	// 	}
+	// }
+
+
+	// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+	let modalSuccess = document.querySelector('.modal_success');
+
+	modalOrder.style.display = "none";
+	document.querySelector('.loader').style.display= 'block';
+
+	function hideLoader () {
+		document.querySelector('.loader').style.display= 'none';
+			
+			modalSuccess.style.display = 'block';
+			setTimeout(fadeAway, 4000);
+	}
+
+	setTimeout(hideLoader , 4000);
+	
+
+	function fadeAway() {
+		modalSuccess.style.display = 'none';
+		modalOrderBg.style.display = "none";
+	}
+	modalSuccess.addEventListener('click', fadeAway);
+
+})
+
+
+
+
+
+//кликаем на первую галочку, 
+//если кликаем на другую, с первой галка убирается
+
 
 
 // window.onload = function() {

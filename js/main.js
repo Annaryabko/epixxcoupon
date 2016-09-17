@@ -257,22 +257,36 @@ sortByDiscount.addEventListener('click', function(event){
 var catItems = document.querySelectorAll('.catalog__item');
 var checkboxes = document.querySelectorAll('.checkbox__input');
 var pricesInput = document.querySelectorAll('.filter__input');
+var typeCheckboxes = document.querySelectorAll('.filter__content--coupon-type .checkbox__input');
+var metroStationCheckboxes = document.querySelectorAll('.filter__content--metro .checkbox__input');
 
 
 function updateVisibility(){
 	
 	var filteredTypes = {
-		entertainment: checkboxes[0].checked,
-		beauty: checkboxes[1].checked,
-		travel: checkboxes[2].checked,
-		education: checkboxes[3].checked,
-		food: checkboxes[4].checked,
-		special: checkboxes[5].checked,
-		primorskaya: checkboxes[6].checked,
-		admiralteiskaya: checkboxes[7].checked,
-		pushkinskaya: checkboxes[8].checked,
+		// entertainment: checkboxes[0].checked,
+		// beauty: checkboxes[1].checked,
+		// travel: checkboxes[2].checked,
+		// education: checkboxes[3].checked,
+		// food: checkboxes[4].checked,
+		// special: checkboxes[5].checked,
+		// primorskaya: checkboxes[6].checked,
+		// admiralteiskaya: checkboxes[7].checked,
+		//pushkinskaya: checkboxes[8].checked,
 		//лучше пройтись циклом по всем элементам в группе, вынуть значение из innerHTML, и с ним работать. А сейчас ничего нельзя изменить.
 	};
+	var filteredMetro = {};
+
+	for (var c = 0; c < typeCheckboxes.length; c++) {
+		var key = typeCheckboxes[c].parentNode.querySelector('.checkbox__label').innerText;
+		filteredTypes[key] = typeCheckboxes[c].checked;
+	}
+
+	for (var c = 0; c < metroStationCheckboxes.length; c++) {
+		var keyM = metroStationCheckboxes[c].parentNode.querySelector('.checkbox__label').innerText;
+		filteredMetro[keyM] = metroStationCheckboxes[c].checked;
+	}
+
 
 	var filteredPrice = {
 		from: Number(pricesInput[0].value),
@@ -281,7 +295,6 @@ function updateVisibility(){
 
 	var inputDateValue = document.querySelector('input[type="date"]').value;
 	
-
 	for (var i = 0; i < catItems.length; i++) {
 		catItems[i].style.display = 'inline-block';
 
@@ -293,10 +306,11 @@ function updateVisibility(){
 			}
 		}
 
-		if (filteredTypes.primorskaya || filteredTypes.admiralteiskaya || filteredTypes.pushkinskaya || filteredTypes.education || filteredTypes.food) {
-			var type = catItems[i].getAttribute('data-type');
+		if (filteredMetro.primorskaya || filteredMetro.admiralteiskaya || filteredMetro.pushkinskaya) {
+			var metro = catItems[i].getAttribute('data-metro');
 
-			if (filteredTypes[type] === false) {
+			if (filteredMetro[metro] === false) {
+				console.log('!!!');
 				catItems[i].style.display = 'none';
 			}
 		}
@@ -330,8 +344,9 @@ function updateVisibility(){
 
 		if (inputDateValue) {
 			var inputDate = new Date(inputDateValue);
-			var parts = catItems[i].getAttribute('data-date-from').split('.');
+			var parts = catItems[i].getAttribute('data-date-from').split('.');// 15.07.16-убираем точки, создаем обьект
 			var dateItems = new Date('20' + parts[2], parts[1] - 1, parts[0]);
+			//console.log(dateItems);
 
 			if (dateItems < inputDate) {
 				catItems[i].style.display = 'none';
@@ -409,11 +424,11 @@ for (let name in validators) {
 	document.querySelector('.modal__line .input[name="'+name+'"]').addEventListener('change', function (){
 		if (document.querySelector('.'+name+'__message')) {
 			document.querySelector('.'+name+'__message').remove();
+			this.style.background = 'white';
 		}
 
-		if (validators[name].test(this.value)){
-			
 
+		if (validators[name].test(this.value)){
 			this.style.background = 'green';
 			var success = document.createElement('div');
 			success.className = ''+name+'__message';
@@ -425,12 +440,18 @@ for (let name in validators) {
 		} else {
 			this.style.background = 'red';
 			var fail = document.createElement('div');
-			fail.className = ''+name+'__message';
+			fail.className = ''+name+'__messageFail';
 			fail.innerHTML = 'Ошибка!!';
 			fail.style.fontSize = '12px';
 			fail.style.color = 'red';
 			this.parentNode.appendChild(fail);
 		}
+
+		//if (document.querySelector('.modal__line .input[name="'+name+'"] .'+name+'__messageFail'
+		//	&& 
+		//	){
+
+		//}
 
 	});
 }
@@ -446,11 +467,14 @@ for (let i = 0; i<tickIconsModal.length; i++){
 
 	tickIconsModal[i].addEventListener('change', function() {
 
+		this.classList.add("tickactive");
+
 		for (let j = 0; j<tickIconsModal.length; j++) {
 
 			if (tickIconsModal[j] != this) {
 			tickIconsModal[j].checked = false;
 			}
+
 		}
 	})
 
@@ -481,16 +505,6 @@ document.querySelector('.modal__inner a.btn').addEventListener('click', function
 
 
 
-
-
-
-
-
-
-
-
-
-
 	let modalSuccess = document.querySelector('.modal_success');
 
 	modalOrder.style.display = "none";
@@ -503,7 +517,7 @@ document.querySelector('.modal__inner a.btn').addEventListener('click', function
 			setTimeout(fadeAway, 4000);
 	}
 
-	setTimeout(hideLoader , 4000);
+	setTimeout(hideLoader , 1000);
 	
 
 	function fadeAway() {
@@ -511,112 +525,10 @@ document.querySelector('.modal__inner a.btn').addEventListener('click', function
 		modalOrderBg.style.display = "none";
 	}
 	modalSuccess.addEventListener('click', fadeAway);
+	modalOrderBg.addEventListener('click', fadeAway);
+
 
 })
-
-
-
-
-
-//кликаем на первую галочку, 
-//если кликаем на другую, с первой галка убирается
-
-
-
-// window.onload = function() {
-
-// var input = document.querySelectorAll('.modal_line .input');
-
-//var regName = /^[a-z0-9]+$/i,
-// 	regPhone = /^[0-9]{7}$/,
-// 	regEmail = /^[a-z0-9]+@[a-z]+\.[a-z]+$/i;
-
-// var clean = function() {
-// 	this.style.background= 'white';
-// }
-
-// var check = function(regexp) {
-
-// 	    if((this.value).search(regexp) == -1) { // возвращает порядковый номер введения. Лучше .test??????
-//         this.style.background= 'red';
-//       	}  else {
-//       	this.style.background= 'green';
-//       	}
-
-
-// }
-
-// var validators = {
-// 	lastname: checkName,
-// 	phonenumber: checkPhone,
-// 	email: checkEmail
-// } 
-
-
-// function checkName () {
-
-// }
-
-// function checkPhone () {
-// }
-
-// function checkEmail () {
-// }
-
-
-
-// function validate () {
-// 	clean.call(this);
-
-// 	if ( this.value === "" ) return;
-    
-   
-//     var type = this.getAttribute('name');  // type === 'lastname'
-//     var validator === checkName;
-//     validators[last]
-
-
-
-//     /*obj = {
-//     	'lastname': 1,
-//     	'type': 2
-//     }
-//     obj[type] -> obj['lastname'] */
-
-
-// 	if ((name).indexOf("your name") == -1 ) {
-//       check.call(this, regName);
-// 	}
-
-// }
-
-
-//   for(var i = 0; i < input.length; i++) {
-//     input[i].addEventListener('change', validate);
-//   }
-
-// }
-
-
-
-
-
-
-
-/*var catalogFiltersItems = document.querySelectorAll('.catalog_filters__item');
-
-for (let i = 0; i < catalogFiltersItems.length; i++) {
-	
-	catalogFiltersItems[i].addEventListener('click', function(event){
-
-		catalogFiltersItems[i].classList.toggle('.filter--open');
-	})
-
-} */
-
-
-
-
 
 
 
